@@ -1,74 +1,72 @@
 #include <iostream>
 using namespace std;
 
-void set_red_text()
+const int WHITE = 0;
+const int RED = 31;
+const int BLUE = 34;
+
+const int SIZE_BOARD = 8;
+
+struct Chessman {
+    char symbol;
+    int color;
+};
+
+struct Chessman board[SIZE_BOARD][SIZE_BOARD];
+
+void set_color_text(int color)
 {
-    printf("\x1b[31m");
+    printf("\x1b[%dm", color);
 }
 
-void set_blue_text()
+void init_chess_board()
 {
-    printf("\x1b[34m");
+    for (int i = 0; i < SIZE_BOARD; i++) {
+        board[6][i] = {'P', RED};
+        board[1][i] = {'P', WHITE};
+    }
+
+    board[7][0] = {'R', RED};
+    board[7][7] = {'R', RED};
+    board[0][0] = {'R', WHITE};
+    board[0][7] = {'R', WHITE};
+
+    board[7][1] = {'N', RED};
+    board[7][6] = {'N', RED};
+    board[0][1] = {'N', WHITE};
+    board[0][6] = {'N', WHITE};
+
+    board[7][2] = {'B', RED};
+    board[7][5] = {'B', RED};
+    board[0][2] = {'B', WHITE};
+    board[0][5] = {'B', WHITE};
+
+    board[7][3] = {'Q', RED};
+    board[0][3] = {'Q', WHITE};
+
+    board[7][4] = {'K', RED};
+    board[0][4] = {'K', WHITE};
 }
 
-void set_white_text()
+void print_board()
 {
-    printf("\x1b[0m");
-}
-
-void print_initial_chess_board()
-{
-    set_blue_text();
+    set_color_text(BLUE);
     printf("%2c", ' ');
     for (int i = 0; i < 8; i++) {
         printf("%2c", 'A' + i);
     }
     printf("\n");
-    set_white_text();
+    set_color_text(WHITE);
 
-    for (int i = 8; i > 0; i--) {
-        set_blue_text();
-        printf("%2d", i);
-        set_white_text();
+    for (int i = SIZE_BOARD - 1; i >= 0; i--) {
+        set_color_text(BLUE);
+        printf("%2d", i + 1);
+        set_color_text(WHITE);
 
-        switch (i) {
-        case 8:
-            set_red_text();
-        case 1:
-            for (int j = 0; j <= 8; j++) {
-                switch (j) {
-                case 1:
-                case 8:
-                    printf("%2c", 'R');
-                    break;
-                case 2:
-                case 7:
-                    printf("%2c", 'N');
-                    break;
-                case 3:
-                case 6:
-                    printf("%2c", 'B');
-                    break;
-                case 4:
-                    printf("%2c", 'Q');
-                    break;
-                case 5:
-                    printf("%2c", 'K');
-                    break;
-                }
-            }
-
-            set_white_text();
-            break;
-        case 7:
-            set_red_text();
-        case 2:
-            for (int i = 0; i < 8; i++) {
-                printf("%2c", 'P');
-            }
-
-            set_white_text();
-            break;
+        for (int j = 0; j < SIZE_BOARD; j++) {
+            set_color_text(board[i][j].color);
+            printf("%2c", board[i][j].symbol);
+            set_color_text(WHITE);
         }
 
         printf("\n");
@@ -77,6 +75,7 @@ void print_initial_chess_board()
 
 int main()
 {
-    print_initial_chess_board();
+    init_chess_board();
+    print_board();
     return 0;
 }
