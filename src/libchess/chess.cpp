@@ -1,5 +1,5 @@
-#include <iostream>
-using namespace std;
+#include <libchess/chess.h>
+#include <stdio.h>
 
 const int WHITE = 0;
 const int RED = 31;
@@ -71,11 +71,4 @@ void print_board()
 
         printf("\n");
     }
-}
-
-int main()
-{
-    init_chess_board();
-    print_board();
-    return 0;
 }
