@@ -63,14 +63,14 @@ int main()
     int final_y;
 
     while (true) {
-        int code = data_in_check_out(start_x, start_y, final_x, final_y);
+        int code = data_in_check(start_x, start_y, final_x, final_y);
         if (code == 1) {
             break;
         } else if (code == 2) {
             continue;
         }
 
-        printf("%d %d %d %d", start_x, start_y, final_x, final_y);
+        figure_move(start_x, start_y, final_x, final_y);
     }
     return 0;
 }

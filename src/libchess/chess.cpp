@@ -72,3 +72,23 @@ void print_board()
         printf("\n");
     }
 }
+
+int figure_move(
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    switch (board[start_y][start_x].symbol) {
+    case ' ':
+        return 1;
+    case 'P':
+        printf("choosed pawn\n");
+        break;
+    default:
+        printf("another figure moves are not supported yet\n");
+    }
+
+    printf("%d %d\n", final_x, final_y);
+    return 0;
+}
