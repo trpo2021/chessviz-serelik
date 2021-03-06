@@ -73,6 +73,28 @@ void print_board()
     }
 }
 
+int move_and_attack_pawn(
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    printf("%d %d %d %d\n", start_x, start_y, final_x, final_y);
+
+    switch (start_x - final_x) {
+    case 0:
+        printf("move \n");
+        break;
+    case -1:
+    case 1:
+        printf("attack \n");
+        break;
+    default:
+        printf("impossible pawn move or attack\n");
+    }
+    return 0;
+}
+
 int figure_move(
         const int& start_x,
         const int& start_y,
@@ -83,12 +105,9 @@ int figure_move(
     case ' ':
         return 1;
     case 'P':
-        printf("choosed pawn\n");
-        break;
+        return move_and_attack_pawn(start_x, start_y, final_x, final_y);
     default:
         printf("another figure moves are not supported yet\n");
+        return 1;
     }
-
-    printf("%d %d\n", final_x, final_y);
-    return 0;
 }
