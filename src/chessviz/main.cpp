@@ -57,7 +57,6 @@ int main()
     init_chess_board();
     print_board();
 
-    char start_x;
     int start_y;
     char final_x;
     int final_y;
