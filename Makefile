@@ -1,3 +1,4 @@
+CC = g++
 APP_NAME = chessviz
 LIB_NAME = libchess
 
