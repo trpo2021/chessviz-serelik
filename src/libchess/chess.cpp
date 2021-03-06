@@ -13,6 +13,16 @@ struct Chessman {
 };
 
 struct Chessman board[SIZE_BOARD][SIZE_BOARD];
+int current_player_color = WHITE;
+
+void change_current_player()
+{
+    if (current_player_color == WHITE) {
+        current_player_color = RED;
+    } else {
+        current_player_color = WHITE;
+    }
+}
 
 void set_color_text(int color)
 {
@@ -185,13 +195,28 @@ int figure_move(
         const int& final_x,
         const int& final_y)
 {
-    switch (board[start_y][start_x].symbol) {
-    case ' ':
-        return 1;
-    case 'P':
-        return move_and_attack_pawn(start_x, start_y, final_x, final_y);
-    default:
-        printf("another figure moves are not supported yet\n");
+    if (board[start_y][start_x].color != current_player_color) {
+        printf("it's another player's turn \n");
         return 1;
     }
+
+    int code = 1;
+
+    switch (board[start_y][start_x].symbol) {
+    case ' ':
+        code = 1;
+        break;
+    case 'P':
+        code = move_and_attack_pawn(start_x, start_y, final_x, final_y);
+        break;
+    default:
+        printf("another figure moves are not supported yet\n");
+        code = 1;
+    }
+
+    if (code == 0) {
+        change_current_player();
+    }
+
+    return code;
 }
