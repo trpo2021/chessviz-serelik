@@ -70,7 +70,13 @@ int main()
             continue;
         }
 
-        figure_move(start_x, start_y, final_x, final_y);
+        code = figure_move(start_x, start_y, final_x, final_y);
+
+        if (code == 0) {
+            print_board();
+        } else {
+            continue;
+        }
     }
     return 0;
 }
