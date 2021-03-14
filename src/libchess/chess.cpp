@@ -138,6 +138,7 @@ int pawn_move(
         return 0;
     }
 
+    printf("impossible pawn move\n");
     return 1;
 }
 
@@ -168,6 +169,8 @@ int pawn_attack(
         printf("pawn cant make back attack\n");
         return 1;
     }
+
+    printf("impossible pawn attack\n");
     return 1;
 }
 
