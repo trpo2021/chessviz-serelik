@@ -204,6 +204,7 @@ int figure_move(
 
     switch (board[start_y][start_x].symbol) {
     case ' ':
+        printf("you shoosed empty cell\n");
         code = 1;
         break;
     case 'P':
