@@ -38,9 +38,6 @@ $(LIB_PATH): $(LIB_OBJECTS)
 $(OBJ_DIR)/%.o: %.cpp
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-$(OBJ_DIR)/%.o: %.cpp
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
-
 .PHONY: clean
 clean:
 	$(RM) $(APP_PATH) $(LIB_PATH)
