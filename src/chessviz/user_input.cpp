@@ -20,7 +20,7 @@ int data_in_check(char& start_x, int& start_y, char& final_x, int& final_y)
 
     if (input_str.compare("exit") == 0) {
         return 1;
-    } else if (input_str.size() != 5) {
+    } else if (input_str.size() != 5 || input_str.at(2) != '-') {
         printf("Incorrecnt input! for example \"e2-e4\"\n");
         return 2;
     }
