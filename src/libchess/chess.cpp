@@ -1,16 +1,10 @@
 #include <libchess/chess.h>
+#include <libchess/chessman.h>
 #include <stdio.h>
 
 const int WHITE = 0;
 const int RED = 31;
 const int BLUE = 34;
-
-const int SIZE_BOARD = 8;
-
-struct Chessman {
-    char symbol;
-    int color;
-};
 
 struct Chessman board[SIZE_BOARD][SIZE_BOARD];
 int current_player_color = WHITE;
@@ -29,7 +23,7 @@ void set_color_text(int color)
     printf("\x1b[%dm", color);
 }
 
-void init_chess_board()
+void create_init_chess_board(Chessman board[SIZE_BOARD][SIZE_BOARD])
 {
     for (int i = 0; i < SIZE_BOARD; i++) {
         board[6][i] = {'P', RED};
@@ -64,6 +58,11 @@ void init_chess_board()
     }
 }
 
+void init_chess_board()
+{
+    create_init_chess_board(board);
+}
+
 void print_board()
 {
     set_color_text(BLUE);
@@ -90,6 +89,7 @@ void print_board()
 }
 
 void figure_transfer(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
         const int& start_x,
         const int& start_y,
         const int& final_x,
@@ -100,6 +100,7 @@ void figure_transfer(
 }
 
 int pawn_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
         const int& start_x,
         const int& start_y,
         const int& final_x,
@@ -119,7 +120,7 @@ int pawn_move(
             return 1;
         }
 
-        figure_transfer(start_x, start_y, final_x, final_y);
+        figure_transfer(board, start_x, start_y, final_x, final_y);
         return 0;
     }
 
@@ -134,7 +135,7 @@ int pawn_move(
             return 1;
         }
 
-        figure_transfer(start_x, start_y, final_x, final_y);
+        figure_transfer(board, start_x, start_y, final_x, final_y);
         return 0;
     }
 
@@ -143,6 +144,7 @@ int pawn_move(
 }
 
 int pawn_attack(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
         const int& start_x,
         const int& start_y,
         const int& final_x,
@@ -162,7 +164,7 @@ int pawn_attack(
                 return 1;
             }
 
-            figure_transfer(start_x, start_y, final_x, final_y);
+            figure_transfer(board, start_x, start_y, final_x, final_y);
             return 0;
         }
     } else {
@@ -175,6 +177,7 @@ int pawn_attack(
 }
 
 int move_and_attack_pawn(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
         const int& start_x,
         const int& start_y,
         const int& final_x,
@@ -182,10 +185,10 @@ int move_and_attack_pawn(
 {
     switch (start_x - final_x) {
     case 0:
-        return pawn_move(start_x, start_y, final_x, final_y);
+        return pawn_move(board, start_x, start_y, final_x, final_y);
     case -1:
     case 1:
-        return pawn_attack(start_x, start_y, final_x, final_y);
+        return pawn_attack(board, start_x, start_y, final_x, final_y);
     default:
         printf("impossible pawn move or attack\n");
     }
@@ -211,7 +214,7 @@ int figure_move(
         code = 1;
         break;
     case 'P':
-        code = move_and_attack_pawn(start_x, start_y, final_x, final_y);
+        code = move_and_attack_pawn(board, start_x, start_y, final_x, final_y);
         break;
     default:
         printf("another figure moves are not supported yet\n");
