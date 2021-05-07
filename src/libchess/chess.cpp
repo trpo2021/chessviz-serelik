@@ -53,7 +53,7 @@ void create_init_chess_board(Chessman board[SIZE_BOARD][SIZE_BOARD])
 
     for (int i = 2; i < 6; i++) {
         for (int j = 0; j < SIZE_BOARD; j++) {
-            board[i][j] = {' ', WHITE};
+            board[i][j] = {' ', BLUE};
         }
     }
 }
@@ -88,6 +88,30 @@ void print_board()
     }
 }
 
+bool is_coordinates_different(
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    return start_x != final_x || start_y != final_y;
+}
+
+bool is_attack_allies(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    if (board[start_y][start_x].color == board[final_y][final_x].color) {
+        printf("cant attack allies \n");
+        return true;
+    }
+
+    return false;
+}
+
 void figure_transfer(
         Chessman board[SIZE_BOARD][SIZE_BOARD],
         const int& start_x,
@@ -96,7 +120,7 @@ void figure_transfer(
         const int& final_y)
 {
     board[final_y][final_x] = board[start_y][start_x];
-    board[start_y][start_x] = {' ', WHITE};
+    board[start_y][start_x] = {' ', BLUE};
 }
 
 int pawn_move(
@@ -158,9 +182,7 @@ int pawn_attack(
 
     if (final_y - start_y == (1 * forward_direction)) {
         if (board[final_y][final_x].symbol != ' ') {
-            if (board[start_y][start_x].color
-                == board[final_y][final_x].color) {
-                printf("cant attack allies \n");
+            if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
                 return 1;
             }
 
@@ -195,6 +217,70 @@ int move_and_attack_pawn(
     return 0;
 }
 
+int rook_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    if (is_coordinates_different(start_x, start_y, final_x, final_y) == false) {
+        printf("figure is not moving\n");
+        return 2;
+    }
+
+    char move_coordinate_line;
+    bool is_increase;
+    int i, final_coordinate;
+
+    if (start_x == final_x && start_y != final_y) {
+        move_coordinate_line = 'y';
+        is_increase = final_y > start_y;
+        i = start_y;
+        final_coordinate = final_y;
+    } else if (start_x != final_x && start_y == final_y) {
+        move_coordinate_line = 'x';
+        is_increase = final_x > start_x;
+        i = start_x;
+        final_coordinate = final_x;
+    } else {
+        printf("Rook cant move like that\n");
+        return 1;
+    }
+
+    if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
+        return 1;
+    }
+
+    while (true) {
+        if (is_increase) {
+            i++;
+        } else {
+            i--;
+        }
+
+        if (i == final_coordinate) {
+            break;
+        }
+
+        char symbol;
+
+        if (move_coordinate_line == 'y') {
+            symbol = board[i][start_x].symbol;
+        } else {
+            symbol = board[start_y][i].symbol;
+        }
+
+        if (symbol != ' ') {
+            printf("it is not horse\n");
+            return 1;
+        }
+    }
+
+    figure_transfer(board, start_x, start_y, final_x, final_y);
+    return 0;
+}
+
 int figure_move(
         const int& start_x,
         const int& start_y,
@@ -215,6 +301,9 @@ int figure_move(
         break;
     case 'P':
         code = move_and_attack_pawn(board, start_x, start_y, final_x, final_y);
+        break;
+    case 'R':
+        code = rook_move(board, start_x, start_y, final_x, final_y);
         break;
     default:
         printf("another figure moves are not supported yet\n");
