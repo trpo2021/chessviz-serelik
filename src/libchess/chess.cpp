@@ -88,6 +88,31 @@ void print_board()
     }
 }
 
+void print_board(Chessman board[SIZE_BOARD][SIZE_BOARD])
+{
+    set_color_text(BLUE);
+    printf("%2c", ' ');
+    for (int i = 0; i < 8; i++) {
+        printf("%2c", 'A' + i);
+    }
+    printf("\n");
+    set_color_text(WHITE);
+
+    for (int i = SIZE_BOARD - 1; i >= 0; i--) {
+        set_color_text(BLUE);
+        printf("%2d", i + 1);
+        set_color_text(WHITE);
+
+        for (int j = 0; j < SIZE_BOARD; j++) {
+            set_color_text(board[i][j].color);
+            printf("%2c", board[i][j].symbol);
+            set_color_text(WHITE);
+        }
+
+        printf("\n");
+    }
+}
+
 bool is_coordinates_different(
         const int& start_x,
         const int& start_y,
