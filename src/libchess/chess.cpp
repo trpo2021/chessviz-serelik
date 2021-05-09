@@ -130,12 +130,7 @@ bool is_attack_allies(
         const int& final_x,
         const int& final_y)
 {
-    if (board[start_y][start_x].color == board[final_y][final_x].color) {
-        printf("cant attack allies \n");
-        return true;
-    }
-
-    return false;
+    return board[start_y][start_x].color == board[final_y][final_x].color;
 }
 
 void figure_transfer(
@@ -166,31 +161,27 @@ int pawn_move(
 
     if (final_y - start_y == (1 * forward_direction)) {
         if (board[final_y][final_x].symbol != ' ') {
-            printf("pawn cant attack forward\n");
-            return 1;
+            return CODE_ILLEGAL_MOVE;
         }
 
         figure_transfer(board, start_x, start_y, final_x, final_y);
-        return 0;
+        return CODE_OK;
     }
 
     if (final_y - start_y == (2 * forward_direction)) {
         if (start_y != initial_position) {
-            printf("You can not move on 2 cell only with start position\n");
-            return 1;
+            return CODE_ILLEGAL_MOVE;
         }
 
         if (board[start_y + (1 * forward_direction)][start_x].symbol != ' ') {
-            printf("You can not jump through figure\n");
-            return 1;
+            return CODE_ILLEGAL_MOVE;
         }
 
         figure_transfer(board, start_x, start_y, final_x, final_y);
-        return 0;
+        return CODE_OK;
     }
 
-    printf("impossible pawn move\n");
-    return 1;
+    return CODE_ILLEGAL_MOVE;
 }
 
 int pawn_attack(
@@ -209,19 +200,17 @@ int pawn_attack(
     if (final_y - start_y == (1 * forward_direction)) {
         if (board[final_y][final_x].symbol != ' ') {
             if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
-                return 1;
+                return CODE_ILLEGAL_MOVE;
             }
 
             figure_transfer(board, start_x, start_y, final_x, final_y);
-            return 0;
+            return CODE_OK;
         }
     } else {
-        printf("pawn cant make back attack\n");
-        return 1;
+        return CODE_ILLEGAL_MOVE;
     }
 
-    printf("impossible pawn attack\n");
-    return 1;
+    return CODE_ILLEGAL_MOVE;
 }
 
 int move_and_attack_pawn(
@@ -238,9 +227,8 @@ int move_and_attack_pawn(
     case 1:
         return pawn_attack(board, start_x, start_y, final_x, final_y);
     default:
-        printf("impossible pawn move or attack\n");
+        return CODE_ILLEGAL_MOVE;
     }
-    return 0;
 }
 
 int rook_move(
@@ -265,12 +253,11 @@ int rook_move(
         i = start_x;
         final_coordinate = final_x;
     } else {
-        printf("Rook cant move like that\n");
-        return 1;
+        return CODE_ILLEGAL_MOVE;
     }
 
     if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
-        return 1;
+        return CODE_ALLIES_ATTACK;
     }
 
     while (true) {
@@ -293,13 +280,12 @@ int rook_move(
         }
 
         if (symbol != ' ') {
-            printf("it is not horse\n");
-            return 1;
+            return CODE_ILLEGAL_MOVE;
         }
     }
 
     figure_transfer(board, start_x, start_y, final_x, final_y);
-    return 0;
+    return CODE_OK;
 }
 
 int bishop_move(
@@ -310,12 +296,11 @@ int bishop_move(
         const int& final_y)
 {
     if (abs(final_y - start_y) != abs(final_x - start_x)) {
-        printf("bishop cant move like that\n");
-        return 1;
+        return CODE_ILLEGAL_MOVE;
     }
 
     if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
-        return 1;
+        return CODE_ALLIES_ATTACK;
     }
 
     bool is_increase_x = final_x > start_x;
@@ -340,13 +325,12 @@ int bishop_move(
         }
 
         if (board[i_y][i_x].symbol != ' ') {
-            printf("it is not horse\n");
-            return 1;
+            return CODE_ILLEGAL_MOVE;
         }
     }
 
     figure_transfer(board, start_x, start_y, final_x, final_y);
-    return 0;
+    return CODE_OK;
 }
 
 int knight_move(
@@ -361,15 +345,47 @@ int knight_move(
 
     if ((x_diff == 1 && y_diff == 2) || (x_diff == 2 && y_diff == 1)) {
         if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
-            return 1;
+            return CODE_ALLIES_ATTACK;
         }
 
         figure_transfer(board, start_x, start_y, final_x, final_y);
-        return 0;
+        return CODE_OK;
     }
 
-    printf("horse cant move like that\n");
-    return 1;
+    return CODE_ILLEGAL_MOVE;
+}
+
+int queen_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    int code = rook_move(board, start_x, start_y, final_x, final_y);
+    if (code == CODE_OK) {
+        return code;
+    }
+
+    code = bishop_move(board, start_x, start_y, final_x, final_y);
+    return code;
+}
+
+int king_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    int x_diff = abs(final_x - start_x);
+    int y_diff = abs(final_y - start_y);
+
+    if (x_diff > 1 && y_diff > 1) {
+        return CODE_ILLEGAL_MOVE;
+    }
+
+    return queen_move(board, start_x, start_y, final_x, final_y);
 }
 
 int figure_move(
@@ -379,21 +395,18 @@ int figure_move(
         const int& final_y)
 {
     if (board[start_y][start_x].color != current_player_color) {
-        printf("it's another player's turn \n");
-        return 1;
+        return CODE_ANOTHER_PLAYER;
     }
 
     if (is_coordinates_different(start_x, start_y, final_x, final_y) == false) {
-        printf("figure is not moving\n");
-        return 2;
+        return CODE_DONT_MOVING;
     }
 
-    int code = 1;
+    int code = CODE_ILLEGAL_MOVE;
 
     switch (board[start_y][start_x].symbol) {
     case ' ':
-        printf("you shoosed empty cell\n");
-        code = 1;
+        code = CODE_ILLEGAL_MOVE;
         break;
     case 'P':
         code = move_and_attack_pawn(board, start_x, start_y, final_x, final_y);
@@ -407,12 +420,17 @@ int figure_move(
     case 'N':
         code = knight_move(board, start_x, start_y, final_x, final_y);
         break;
+    case 'Q':
+        code = queen_move(board, start_x, start_y, final_x, final_y);
+        break;
+    case 'K':
+        code = king_move(board, start_x, start_y, final_x, final_y);
+        break;
     default:
-        printf("another figure moves are not supported yet\n");
-        code = 1;
+        code = CODE_ILLEGAL_MOVE;
     }
 
-    if (code == 0) {
+    if (code == CODE_OK) {
         change_current_player();
     }
 

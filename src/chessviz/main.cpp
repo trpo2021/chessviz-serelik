@@ -1,4 +1,5 @@
 #include "libchess/chess.h"
+#include "show_error.h"
 #include "user_input.h"
 
 int main()
@@ -24,6 +25,7 @@ int main()
         if (code == 0) {
             print_board();
         } else {
+            show_error(code);
             continue;
         }
     }
