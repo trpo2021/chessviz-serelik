@@ -28,4 +28,16 @@ int knight_move(
         const int& final_x,
         const int& final_y);
 
-void print_board(Chessman board[SIZE_BOARD][SIZE_BOARD]);
+int queen_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y);
+
+int king_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y);

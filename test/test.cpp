@@ -87,7 +87,7 @@ TEST_CASE("Rook", "")
         test_board[0][0].color = WHITE;
         test_board[1][0].symbol = 'P';
         test_board[1][0].color = WHITE;
-        CHECK(rook_move(test_board, 0, 0, 0, 1) == 1);
+        CHECK(rook_move(test_board, 0, 0, 0, 1) == 3);
     }
 
     SECTION("Rook a1-a7 (rook eat)")
@@ -118,7 +118,7 @@ TEST_CASE("Bishop", "")
 {
     create_empty_board(test_board);
 
-    SECTION("bishop c1-e3(rook is not a horse)")
+    SECTION("bishop c1-e3(Bishop is not a horse)")
     {
         test_board[0][2].symbol = 'B';
         test_board[0][2].color = WHITE;
@@ -203,13 +203,13 @@ TEST_CASE("Knight", "")
         CHECK(knight_move(test_board, 2, 0, 4, 1) == 0);
     }
 
-    SECTION("Knight b1-d2(Knight eat)")
+    SECTION("Knight b1-d2(Knight cant eat allies)")
     {
         test_board[0][2].symbol = 'N';
         test_board[0][2].color = WHITE;
         test_board[1][4].symbol = 'P';
         test_board[1][4].color = WHITE;
-        CHECK(knight_move(test_board, 2, 0, 4, 1) == 1);
+        CHECK(knight_move(test_board, 2, 0, 4, 1) == 3);
     }
     SECTION("Knight b1-d2(Knight eat)")
     {
@@ -218,5 +218,97 @@ TEST_CASE("Knight", "")
         test_board[1][4].symbol = 'P';
         test_board[1][4].color = RED;
         CHECK(knight_move(test_board, 2, 0, 4, 1) == 0);
+    }
+}
+
+TEST_CASE("Queen", "")
+{
+    create_empty_board(test_board);
+
+    SECTION("Queen a8-h1 (Queen move like Bishop)")
+    {
+        test_board[7][0].symbol = 'Q';
+        test_board[7][0].color = WHITE;
+        CHECK(queen_move(test_board, 0, 7, 7, 0) == 0);
+    }
+
+    SECTION("Queen h1-a8 (Queen eat like Bishop)")
+    {
+        test_board[0][7].symbol = 'Q';
+        test_board[0][7].color = WHITE;
+        test_board[7][0].symbol = 'R';
+        test_board[7][0].color = RED;
+        CHECK(queen_move(test_board, 7, 0, 0, 7) == 0);
+    }
+
+    SECTION("Queen a3-h3 (Queen move like Rook)")
+    {
+        test_board[0][0].symbol = 'Q';
+        test_board[0][0].color = WHITE;
+        CHECK(queen_move(test_board, 0, 0, 7, 0) == 0);
+    }
+
+    SECTION("Queen a3-h3 (Queen eat like Rook)")
+    {
+        test_board[0][0].symbol = 'Q';
+        test_board[0][0].color = WHITE;
+        test_board[0][7].symbol = 'R';
+        test_board[0][7].color = RED;
+
+        CHECK(queen_move(test_board, 0, 0, 7, 0) == 0);
+    }
+
+    SECTION("Queen c1-e3(Queen is not a horse)")
+    {
+        test_board[0][2].symbol = 'Q';
+        test_board[0][2].color = WHITE;
+        test_board[1][3].symbol = 'P';
+        test_board[1][3].color = WHITE;
+        CHECK(queen_move(test_board, 2, 0, 4, 2) == 1);
+    }
+}
+
+TEST_CASE("King", "")
+{
+    create_empty_board(test_board);
+
+    SECTION("king a8-b7 (King move like Bishop)")
+    {
+        test_board[7][0].symbol = 'K';
+        test_board[7][0].color = WHITE;
+        CHECK(king_move(test_board, 0, 7, 1, 6) == 0);
+    }
+
+    SECTION("Queen a1-a2 (King eat like Bishop)")
+    {
+        test_board[6][7].symbol = 'K';
+        test_board[6][7].color = WHITE;
+        test_board[7][6].symbol = 'R';
+        test_board[7][6].color = RED;
+        CHECK(king_move(test_board, 7, 6, 6, 7) == 0);
+    }
+
+    SECTION("King a3-b3 (king move like Rook)")
+    {
+        test_board[0][0].symbol = 'K';
+        test_board[0][0].color = WHITE;
+        CHECK(king_move(test_board, 0, 0, 1, 0) == 0);
+    }
+
+    SECTION("King a3-h3 (King eat like Rook)")
+    {
+        test_board[0][0].symbol = 'Q';
+        test_board[0][0].color = WHITE;
+        test_board[0][1].symbol = 'R';
+        test_board[0][1].color = RED;
+
+        CHECK(king_move(test_board, 0, 0, 1, 0) == 0);
+    }
+
+    SECTION("King h1-a8 (King cant move that length)")
+    {
+        test_board[0][7].symbol = 'K';
+        test_board[0][7].color = WHITE;
+        CHECK(king_move(test_board, 7, 0, 0, 7) == 1);
     }
 }
