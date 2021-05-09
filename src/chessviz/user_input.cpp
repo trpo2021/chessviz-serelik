@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 bool is_letter_from_a_to_h(const char& c)
 {
     return c >= 'a' && c <= 'h';
@@ -15,8 +13,8 @@ bool is_digit_from_1_to_8(const int& d)
 
 int data_in_check(char& start_x, int& start_y, char& final_x, int& final_y)
 {
-    string input_str;
-    getline(cin, input_str);
+    std::string input_str;
+    getline(std::cin, input_str);
 
     if (input_str.compare("exit") == 0) {
         return 1;
