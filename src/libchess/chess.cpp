@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <libchess/chess.h>
 #include <libchess/chessman.h>
 #include <stdio.h>
@@ -338,8 +339,6 @@ int bishop_move(
             break;
         }
 
-        char symbol;
-
         if (board[i_y][i_x].symbol != ' ') {
             printf("it is not horse\n");
             return 1;
@@ -348,6 +347,29 @@ int bishop_move(
 
     figure_transfer(board, start_x, start_y, final_x, final_y);
     return 0;
+}
+
+int knight_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    int x_diff = abs(final_x - start_x);
+    int y_diff = abs(final_y - start_y);
+
+    if ((x_diff == 1 && y_diff == 2) || (x_diff == 2 && y_diff == 1)) {
+        if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
+            return 1;
+        }
+
+        figure_transfer(board, start_x, start_y, final_x, final_y);
+        return 0;
+    }
+
+    printf("horse cant move like that\n");
+    return 1;
 }
 
 int figure_move(
@@ -381,6 +403,9 @@ int figure_move(
         break;
     case 'B':
         code = bishop_move(board, start_x, start_y, final_x, final_y);
+        break;
+    case 'N':
+        code = knight_move(board, start_x, start_y, final_x, final_y);
         break;
     default:
         printf("another figure moves are not supported yet\n");
