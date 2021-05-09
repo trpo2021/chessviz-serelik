@@ -14,4 +14,11 @@ int rook_move(
         const int& final_x,
         const int& final_y);
 
+int bishop_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y);
+
 void print_board(Chessman board[SIZE_BOARD][SIZE_BOARD]);

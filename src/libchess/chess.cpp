@@ -249,11 +249,6 @@ int rook_move(
         const int& final_x,
         const int& final_y)
 {
-    if (is_coordinates_different(start_x, start_y, final_x, final_y) == false) {
-        printf("figure is not moving\n");
-        return 2;
-    }
-
     char move_coordinate_line;
     bool is_increase;
     int i, final_coordinate;
@@ -306,6 +301,55 @@ int rook_move(
     return 0;
 }
 
+int bishop_move(
+        Chessman board[SIZE_BOARD][SIZE_BOARD],
+        const int& start_x,
+        const int& start_y,
+        const int& final_x,
+        const int& final_y)
+{
+    if (abs(final_y - start_y) != abs(final_x - start_x)) {
+        printf("bishop cant move like that\n");
+        return 1;
+    }
+
+    if (is_attack_allies(board, start_x, start_y, final_x, final_y)) {
+        return 1;
+    }
+
+    bool is_increase_x = final_x > start_x;
+    bool is_increase_y = final_y > start_y;
+    int i_x = start_x, i_y = start_y;
+
+    while (true) {
+        if (is_increase_x) {
+            i_x++;
+        } else {
+            i_x--;
+        }
+
+        if (is_increase_y) {
+            i_y++;
+        } else {
+            i_y--;
+        }
+
+        if (i_x == final_x) {
+            break;
+        }
+
+        char symbol;
+
+        if (board[i_y][i_x].symbol != ' ') {
+            printf("it is not horse\n");
+            return 1;
+        }
+    }
+
+    figure_transfer(board, start_x, start_y, final_x, final_y);
+    return 0;
+}
+
 int figure_move(
         const int& start_x,
         const int& start_y,
@@ -315,6 +359,11 @@ int figure_move(
     if (board[start_y][start_x].color != current_player_color) {
         printf("it's another player's turn \n");
         return 1;
+    }
+
+    if (is_coordinates_different(start_x, start_y, final_x, final_y) == false) {
+        printf("figure is not moving\n");
+        return 2;
     }
 
     int code = 1;
@@ -329,6 +378,9 @@ int figure_move(
         break;
     case 'R':
         code = rook_move(board, start_x, start_y, final_x, final_y);
+        break;
+    case 'B':
+        code = bishop_move(board, start_x, start_y, final_x, final_y);
         break;
     default:
         printf("another figure moves are not supported yet\n");
